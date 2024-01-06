@@ -7,19 +7,9 @@ const collection = "carts"
 
 const schema = new mongoose.Schema({
     products: {
-        type: [
-            {
-                product: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: "products"
-                },
-                quantity: Number, 
-                _id: false,
-            }
-        ],
-        default: []
+        type: [ mongoose.Schema.Types.ObjectId ], ref: 'products'
+        //default: []
     }
-    
 })
 
 //populate

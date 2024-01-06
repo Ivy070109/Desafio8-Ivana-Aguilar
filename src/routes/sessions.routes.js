@@ -129,6 +129,7 @@ router.post('/register', async (req, res) => {
 router.post('/register', passport.authenticate('register', { failureRedirect: '/api/sessions/failregister'}), async (req, res) => {
     try {
         res.status(200).send({ status: 'OK', data: 'Usuario registrado' })
+        res.redirect('/login')
     } catch(err) {
         res.status(500).send({ status: 'ERR', data: err.message })
     }

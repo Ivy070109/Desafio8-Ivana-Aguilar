@@ -42,7 +42,8 @@ router.get('/:cid', async (req, res) => {
 //agregar producto en carrito
 router.post('/:cid/products/:pid', async (req, res) => {
     try {
-        const { cid, pid } = req.params
+        const cid = req.params.cid
+        const pid = req.params.pid
         const { quantity } = req.body
 
         const result = await cart.addProductInCart(cid, { _id: pid, quantity: quantity })

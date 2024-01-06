@@ -18,7 +18,7 @@ class CartManager {
     //obtener el carrito según id
     getCartById = async (cartId) => {
         try {
-            const cart = await cartModel.findById({ _id: cartId }).populate({ path: 'products', model: productsModel })
+            const cart = await cartModel.findById({ _id: cartId }).populate({ path: 'products', model: productsModel }).lean()
             return cart
         } catch (err) {
             return err.message
@@ -45,26 +45,41 @@ class CartManager {
             const cart = await cartModel.findByIdAndDelete(cartId)
             return cart
         } catch (err) {
-            return err.message(`No se encuentra el carrito con id: ${cartId}`)
+            return err.message(`No se encuentra el carrito`)
         }
     }
 
     //agregar producto en carrito
     addProductInCart = async (cartId, product) => {
 		try {
-            const newProduct = { product: product._id, quantity: 1 }
-			const cart = await cartModel.findById(cartId)
-			const findProduct = cart.products.findIndex(product => product.product.toString() === newProduct.product)
+            // const newProduct = { product: product._id, quantity: 1 }
+			// const cart = await cartModel.findById(cartId)
+			// const findProduct = cart.products.findIndex(product => product.product.toString() === newProduct.product)
 
-			if (findProduct === -1) {
-				cart.products.push(newProduct)
-				const savedCart = await cart.save()
-				return savedCart
-			} else {
-				cart.products[findProduct].quantity++
-				const savedCart = await cart.save()
-				return savedCart
-			}
+			// if (findProduct === -1) {
+			// 	cart.products.push(newProduct)
+			// 	const savedCart = await cart.save()
+			// 	return savedCart
+			// } else {
+			//  	cart.products[findProduct].quantity++
+			//  	const savedCart = await cart.save()
+			// 	return savedCart
+			// }
+            const cart = await cartModel.findById(cartId);
+
+            //Si no halla el carrito devuelve cart not found.
+            if (!cart) {
+                return ('Cart not found');
+            }
+
+            // Actualizar el arreglo de IDs de productos en el carrito
+            cart.products = product
+
+            // Guardar el carrito actualizado
+            const updatedCart = await cart.save();
+
+            return updatedCart
+
 		} catch (err) {
 			return err.message('Error al agregar el producto al carrito')
 		}
