@@ -24,7 +24,14 @@ const schema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-    }
+    },
+    cart: {
+        type: mongoose.Schema.Types.ObjectId, 
+    },
+    role: {
+        type: String,
+        default: 'user',
+    },
 })
 
 const model = mongoose.model(collection, schema)

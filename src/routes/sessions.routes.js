@@ -68,6 +68,10 @@ router.get('/failrestore', async (req, res) => {
     res.status(400).send({ status: 'ERR', data: 'El email no existe o faltan completar campos obligatorios' })
 })
 
+router.get('/failauth', async (req, res) => {
+    res.status(400).send({ status: 'ERR', data: 'Ha habido un error en el login' })
+})
+
 //endpoint de github con autenticación con passport
 router.get('/github', passport.authenticate('githubAuth', { scope: ['user: email'] }), async (req, res) => {
 })
@@ -80,7 +84,7 @@ router.get('/githubcallback', passport.authenticate('githubAuth', { failureRedir
 })
 
 //Dejaré de utilizar el código harcodeado, reemplazare la autentificación con base de datos
-router.post('/login', async (req, res) => {
+/* router.post('/login', async (req, res) => {
     try { 
         const { email, password } = req.body
 
@@ -94,8 +98,18 @@ router.post('/login', async (req, res) => {
         } 
     } catch (err) {
         res.status(500).send({ status: 'ERR', data: err.message })
+        }
+}) */
+
+//register con passport
+router.post('/login', passport.authenticate('loginAuth', { failureRedirect: '/api/sessions/failauth' }), async (req, res) => {
+    try {
+        res.status(200).send({ status: 'OK', data: 'bienvenido' })
+        //res.redirect('/products')
+    } catch (err) {
+        res.status(500).send({ status: 'ERR', data: err.message })
     }
-})
+}) 
 
 //register con password plano
 /*
@@ -129,7 +143,7 @@ router.post('/register', async (req, res) => {
 router.post('/register', passport.authenticate('register', { failureRedirect: '/api/sessions/failregister'}), async (req, res) => {
     try {
         res.status(200).send({ status: 'OK', data: 'Usuario registrado' })
-        res.redirect('/login')
+        //res.redirect('/login')
     } catch(err) {
         res.status(500).send({ status: 'ERR', data: err.message })
     }

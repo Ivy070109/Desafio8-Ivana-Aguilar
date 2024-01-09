@@ -5,6 +5,25 @@ import userModel from '../dao/models/users.model.js'
 import { createHash, isValidPassword } from '../utils.js'
 
 const initPassport = () => {
+    //función login
+    const verifyLogin = async (req, username, password, done) => {
+        try { 
+            const { email, password } = req.body
+    
+            const userInDb = await userModel.findOne({ email: email })
+    
+            if (userInDb && isValidPassword(userInDb, password)) {
+                // userInDb.role = 'User'
+                // await userInDb.save()
+                return done(null, userInDb)
+            } else {
+                return done(null, false, { message: 'Datos no válidos' })
+            }
+        } catch (err) {
+            return done(err)
+        }
+    }
+
     //función de verificación de registro
     const verifyRegistration = async (req, username, password, done) => {
         try {
@@ -77,6 +96,13 @@ const initPassport = () => {
             return done(`Error passport Github: ${err.message}`)
         }
     }
+
+    //estrategia local de login
+    passport.use('loginAuth', new LocalStrategy({
+        passReqToCallback: true,
+        usernameField: 'email', 
+        passwordField: 'password', 
+    }, verifyLogin))
     
     //estrategia local de autenticación de registro
     passport.use('register', new LocalStrategy({
