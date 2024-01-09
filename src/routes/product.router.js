@@ -85,4 +85,13 @@ router.delete("/:pid", async (req, res) => {
   }
 })
 
+router.param('pid', async (req, res, next, pid) => {
+  const regex = new RegExp(/^[a-fA-F0-9]{24}$/)
+  if (regex.test(req.params.pid)) {
+      next()
+  } else {
+      res.status(404).send({ status: 'ERR', data: 'Parámetro no válido' })
+  }
+})
+
 export default router

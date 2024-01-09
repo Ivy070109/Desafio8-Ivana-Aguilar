@@ -26,16 +26,12 @@ router.get('/chat', (req, res) => {
 
 //products solo se mostrará luego de login 
 router.get('/products', async (req, res) => {
-    if (req.session.user) {
-        const data = await productManager.getProducts(req.query.page, req.query.limit)
+    const data = await productManager.getProducts(req.query.page, req.query.limit)
     
-        data.pages = []
-        for (let i = 1; i <= data.totalPages; i++) data.pages.push(i)
-    
-        res.render('products', { data, user: req.session.user })    
-    } else {
-        res.redirect('/login')
-    }
+    data.pages = []
+    for (let i = 1; i <= data.totalPages; i++) data.pages.push(i)
+
+    res.render('products', { data })    
 })
 
 //caso de ser necesario mantengo la página profile
@@ -52,13 +48,29 @@ router.get('/carts', async (req, res) => {
     res.render('carts', { cartsProducts })
 })
 
+// Ruta para obtener un carrito por su id.
+router.get('/carts/:cid', async (req, res) => {
+    const { cid } = req.params
+    let cart = await cartManager.getCartById(cid)
+
+    // Se renderiza la vista cartDetail, pasando el carrito como parámetro.
+    res.render('carts', {
+          cart
+    });
+
+    //let cartArray = cartById.products;
+    //const cartArrayObject = cartArray.map(doc => doc.toObject());
+    //res.render("carts", { cartData });
+
+});
+
 router.get('/register', async (req, res) => {
     res.render('register', {})
 })
 
 router.get('/login', async (req, res) => {
     if (req.session.user) {
-        res.redirect('/profile')
+        res.redirect('/products')
     } else {
         res.render('login', {})
     } 

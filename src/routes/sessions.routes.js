@@ -104,7 +104,8 @@ router.get('/githubcallback', passport.authenticate('githubAuth', { failureRedir
 //register con passport
 router.post('/login', passport.authenticate('loginAuth', { failureRedirect: '/api/sessions/failauth' }), async (req, res) => {
     try {
-        res.status(200).send({ status: 'OK', data: 'bienvenido' })
+        res.redirect('/api/sessions/current')
+        //res.status(200).send({ status: 'OK', data: 'bienvenido' })
         //res.redirect('/products')
     } catch (err) {
         res.status(500).send({ status: 'ERR', data: err.message })
@@ -157,5 +158,17 @@ router.post('/restore', passport.authenticate('restore', { failureRedirect: '/ap
         res.status(500).send({ status: 'ERR', data: err.message })
     }
 })
+
+router.get('/current', (req, res) => {
+    // Verifica si hay un usuario almacenado en la sesión
+    if (req.user) {
+        // Devuelve el usuario actual en la respuesta
+        const user = req.user
+        res.status(200).send({ message: 'Inicio de sesión exitoso', user })
+    } else {
+        // Si no hay usuario en la sesión, devuelve un mensaje indicando que no está autenticado
+        res.redirect('/login');
+    }
+});
 
 export default router

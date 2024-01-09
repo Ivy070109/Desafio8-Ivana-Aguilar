@@ -19,7 +19,7 @@ class CartManager {
     //obtener el carrito según id
     getCartById = async (cartId) => {
         try {
-            const cart = await cartModel.findBy(cartId).lean()
+            const cart = await cartModel.findById(cartId).populate('products.product').lean()
             return cart
         } catch (err) {
             return err.message

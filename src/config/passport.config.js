@@ -13,8 +13,7 @@ const initPassport = () => {
             const userInDb = await userModel.findOne({ email: email })
     
             if (userInDb && isValidPassword(userInDb, password)) {
-                // userInDb.role = 'User'
-                // await userInDb.save()
+                req.session.user = userInDb
                 return done(null, userInDb)
             } else {
                 return done(null, false, { message: 'Datos no válidos' })
