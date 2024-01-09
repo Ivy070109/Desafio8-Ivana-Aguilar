@@ -126,7 +126,6 @@ router.param('cid', async (req, res, next, pid) => {
     } else {
         res.status(404).send({ status: 'ERR', data: 'Parámetro no válido' })
     }
-  })
-  
+})  
 
 export default router

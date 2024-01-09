@@ -68,6 +68,7 @@ router.get('/failrestore', async (req, res) => {
     res.status(400).send({ status: 'ERR', data: 'El email no existe o faltan completar campos obligatorios' })
 })
 
+//ruta de autenticación fail de login
 router.get('/failauth', async (req, res) => {
     res.status(400).send({ status: 'ERR', data: 'Ha habido un error en el login' })
 })
@@ -83,7 +84,7 @@ router.get('/githubcallback', passport.authenticate('githubAuth', { failureRedir
     res.redirect('/profile')
 })
 
-//Dejaré de utilizar el código harcodeado, reemplazare la autentificación con base de datos
+//login hardcodeado
 /* router.post('/login', async (req, res) => {
     try { 
         const { email, password } = req.body
@@ -101,12 +102,22 @@ router.get('/githubcallback', passport.authenticate('githubAuth', { failureRedir
         }
 }) */
 
+//ruta current para login
+router.get('/current', (req, res) => {
+    if (req.user) {
+        const user = req.user
+        res.status(200).send({ message: 'Inicio de sesión exitoso', user })
+    } else {
+        res.redirect('/login')
+    }
+})
+
 //register con passport
 router.post('/login', passport.authenticate('loginAuth', { failureRedirect: '/api/sessions/failauth' }), async (req, res) => {
     try {
-        res.redirect('/api/sessions/current')
+        res.redirect('/products')
+        //res.redirect('/api/sessions/current')
         //res.status(200).send({ status: 'OK', data: 'bienvenido' })
-        //res.redirect('/products')
     } catch (err) {
         res.status(500).send({ status: 'ERR', data: err.message })
     }
@@ -158,17 +169,5 @@ router.post('/restore', passport.authenticate('restore', { failureRedirect: '/ap
         res.status(500).send({ status: 'ERR', data: err.message })
     }
 })
-
-router.get('/current', (req, res) => {
-    // Verifica si hay un usuario almacenado en la sesión
-    if (req.user) {
-        // Devuelve el usuario actual en la respuesta
-        const user = req.user
-        res.status(200).send({ message: 'Inicio de sesión exitoso', user })
-    } else {
-        // Si no hay usuario en la sesión, devuelve un mensaje indicando que no está autenticado
-        res.redirect('/login');
-    }
-});
 
 export default router

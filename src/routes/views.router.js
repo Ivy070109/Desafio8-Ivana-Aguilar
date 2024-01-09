@@ -53,16 +53,8 @@ router.get('/carts/:cid', async (req, res) => {
     const { cid } = req.params
     let cart = await cartManager.getCartById(cid)
 
-    // Se renderiza la vista cartDetail, pasando el carrito como parámetro.
-    res.render('carts', {
-          cart
-    });
-
-    //let cartArray = cartById.products;
-    //const cartArrayObject = cartArray.map(doc => doc.toObject());
-    //res.render("carts", { cartData });
-
-});
+    res.render('cart', { cart })
+})
 
 router.get('/register', async (req, res) => {
     res.render('register', {})

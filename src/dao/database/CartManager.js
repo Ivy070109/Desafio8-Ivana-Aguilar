@@ -1,5 +1,3 @@
-
-
 import cartModel from '../models/carts.model.js'
 import productsModel from '../models/products.model.js'
 class CartManager {
@@ -48,7 +46,6 @@ class CartManager {
         } catch (err) {
             return err.message
         }
-
     }
     
     //borrar carrito según su id
