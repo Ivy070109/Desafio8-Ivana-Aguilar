@@ -20,3 +20,11 @@ const schema = new mongoose.Schema({
         },
     ],
 })
+
+//populate
+schema.pre('find', function() {
+    this.populate("products.product")
+})
+
+const model = mongoose.model(collection, schema)
+export default model
